@@ -4,35 +4,40 @@ pipeline {
     environment {
         JAVA_HOME = "/usr/lib/jvm/jre-17-openjdk"
         PATH = "${JAVA_HOME}/bin:${env.PATH}"
-        PROJECT_DIR = 'WebApp/spring-boot-app' // Corrected PROJECT_DIR
-        DOCKERHUB_USERNAME = 'naniy9836' // Replace with your Docker Hub username
+        PROJECT_DIR = 'spring-boot-app'
+        DOCKERHUB_USERNAME = 'naniy9836'
     }
 
     stages {
+        stage('Cleanup Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
         stage('Checkout Code') {
             steps {
-                sh 'git config --global --unset-all credential.helper || true'
                 git branch: 'main', url: 'https://github.com/nani-1205/WebApp.git'
             }
         }
 
         stage('Verify Directory Structure') {
             steps {
-                sh 'ls -l' // List the contents of the workspace - Keep this for now to confirm
+                sh 'ls -l spring-boot-app'  // Adjusted path
             }
         }
 
         stage('Build') {
             steps {
-                dir("$PROJECT_DIR") {  // Change to the correct project directory
-                    sh 'mvn clean package'
+                dir(PROJECT_DIR) {  
+                    sh 'mvn clean package -X'
                 }
             }
         }
-        
+
         stage('Build Docker Image') {
             steps {
-                dir("$PROJECT_DIR") { // Ensure Docker build runs in project directory
+                dir(PROJECT_DIR) {
                     script {
                         dockerImage = docker.build("$DOCKERHUB_USERNAME/spring-boot-app:latest")
                     }
@@ -45,7 +50,7 @@ pipeline {
                 DOCKER_CREDENTIALS_ID = 'docker-cred'
             }
             steps {
-                dir("$PROJECT_DIR") { // Ensure Docker push runs in project directory
+                dir(PROJECT_DIR) {
                     withDockerRegistry([credentialsId: DOCKER_CREDENTIALS_ID, url: '']) {
                         sh "docker push $DOCKERHUB_USERNAME/spring-boot-app:latest"
                     }
