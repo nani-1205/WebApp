@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+
+    environment {
+        JAVA_HOME = "/usr/lib/jvm/java-17-amazon-corretto"
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
+        PROJECT_DIR = 'java-maven-sonar-argocd-helm-k8s/spring-boot-app' // Corrected PROJECT_DIR
+        DOCKERHUB_USERNAME = 'naniy9836' // Replace with your Docker Hub username
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                sh 'git config --global --unset-all credential.helper || true'
+                git branch: 'main', url: 'https://github.com/nani-1205/Jenkins-Zero-To-Hero.git'
+            }
+        }
+
+        stage('Verify Directory Structure') {
+            steps {
+                sh 'ls -l' // List the contents of the workspace - Keep this for now to confirm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir("$PROJECT_DIR") {  // Change to the correct project directory
+                    sh 'mvn clean package'
+                }
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                dir("$PROJECT_DIR") { // Ensure Docker build runs in project directory
+                    script {
+                        dockerImage = docker.build("$DOCKERHUB_USERNAME/spring-boot-app:latest")
+                    }
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            environment {
+                DOCKER_CREDENTIALS_ID = 'docker-cred'
+            }
+            steps {
+                dir("$PROJECT_DIR") { // Ensure Docker push runs in project directory
+                    withDockerRegistry([credentialsId: DOCKER_CREDENTIALS_ID, url: '']) {
+                        sh "docker push $DOCKERHUB_USERNAME/spring-boot-app:latest"
+                    }
+                }
+            }
+        }
+    }
+}
