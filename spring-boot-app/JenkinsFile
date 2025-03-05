@@ -47,7 +47,7 @@ pipeline {
 
         stage('Push Docker Image') {
             environment {
-                DOCKER_CREDENTIALS_ID = 'docker-cred'
+                DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
             }
             steps {
                 dir(PROJECT_DIR) {
