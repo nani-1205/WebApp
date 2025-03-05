@@ -39,7 +39,7 @@ pipeline {
             steps {
                 dir(PROJECT_DIR) {
                     script {
-                        dockerImage = docker.build("$DOCKERHUB_USERNAME/spring-boot-app:latest")
+                        dockerImage = docker.build("$DOCKERHUB_USERNAME/spring-boot-app-beta:latest")
                     }
                 }
             }
