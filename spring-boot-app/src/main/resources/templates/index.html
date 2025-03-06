@@ -5,11 +5,35 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"/>
     <link data-th-href="@{/css/main.css?{id}(id=${timestamp})}" rel="stylesheet">
     <title>CI/CD-BUILD_BY_JENKINS</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #0ff;
+            text-align: center;
+        }
+        .navbar {
+            background-color: #000;
+            border-bottom: 3px solid #0ff;
+        }
+        .navbar-brand {
+            color: #ff00ff !important;
+            font-weight: bold;
+            text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
+        }
+        .starter-template h1 {
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
+        }
+        .starter-template p {
+            color: #ff6600;
+            text-shadow: 0 0 5px #ff6600, 0 0 10px #ff6600;
+        }
+    </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="#">Ultimate CI/CD Pipeline using Java</div></a>
+<nav class="navbar navbar-expand-md navbar-dark">
+    <a class="navbar-brand" href="#">Ultimate CI/CD Pipeline using Java</a>
 </nav>
 
 <main role="main" class="container">
@@ -21,5 +45,4 @@
 
 <script data-th-src="@{/js/main.js}"></script>
 </body>
-
 </html>
